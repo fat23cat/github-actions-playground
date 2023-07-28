@@ -29,11 +29,13 @@ jobs:
     if: ${{ needs.detect-changes.outputs.project1 == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Project 1 build!"
+      - name: "Build"
+        run: echo "Project 1 build!"
 
   build-project2:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.project2 == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Project 2 build!"
+      - name: "Build"
+        run: echo "Project 2 build!"
