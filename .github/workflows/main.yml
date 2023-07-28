@@ -44,8 +44,10 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          output=$(npm version patch)
-          echo output
+          npm version patch
+          git add --all
+          git commit -m "Project 1 patch version bumped [skip ci]"
+          git push
 
       - name: Build
         run: echo "Project 1 build!"
