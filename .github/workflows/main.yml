@@ -34,6 +34,11 @@ jobs:
         working-directory: project1
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
 
       - name: Setup node.js
         uses: actions/setup-node@v3
