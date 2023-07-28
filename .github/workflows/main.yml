@@ -44,8 +44,8 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          echo "{version}={npm version patch}" >> $GITHUB_OUTPUT
-          echo "${{ steps.env-setup.outputs.version }}"
+          output=$(npm version patch)
+          echo output
 
       - name: Build
         run: echo "Project 1 build!"
