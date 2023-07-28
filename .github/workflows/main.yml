@@ -28,6 +28,10 @@ jobs:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.project1 == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: project1
     steps:
       - uses: actions/checkout@v3
 
@@ -39,6 +43,8 @@ jobs:
       - name: Bump the app version
         id: version
         run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           echo "::set-output name=version::$(npm version patch)"
           echo "Coverage found ${{steps.version.outputs.version}}"
 
