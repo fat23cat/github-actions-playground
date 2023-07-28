@@ -41,12 +41,11 @@ jobs:
           node-version: 16.13
 
       - name: Bump the app version
-        id: version
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          echo "::set-output name=version::$(npm version patch)"
-          echo "Coverage found ${{steps.version.outputs.version}}"
+          echo "version=npm version patch" >> $GITHUB_OUTPUT
+          echo "${{ steps.env-setup.outputs.version }}"
 
       - name: Build
         run: echo "Project 1 build!"
