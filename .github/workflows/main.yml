@@ -29,7 +29,20 @@ jobs:
     if: ${{ needs.detect-changes.outputs.project1 == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: "Build"
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.13
+
+      - name: Bump the app version
+        id: version
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          echo "::set-output name=version::$(npm version patch)"
+          echo "Coverage found ${{steps.version.outputs.version}}"
+
+      - name: Build
         run: echo "Project 1 build!"
 
   build-project2:
@@ -37,5 +50,5 @@ jobs:
     if: ${{ needs.detect-changes.outputs.project2 == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: "Build"
+      - name: Build
         run: echo "Project 2 build!"
