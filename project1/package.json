@@ -7,5 +7,27 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "release": {
+    "branches": [
+      "develop"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "version: ${nextRelease.version}"
+        }
+      ],
+      "@semantic-release/github"
+    ]
+  },
+  "devDependencies": {
+    "semantic-release": "^21.0.7"
+  }
 }

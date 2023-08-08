@@ -38,21 +38,16 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v3
 
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.13
+          node-version: 18
 
       - name: Bump the app version
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          npm version patch
-          git add --all
-          git commit -m "Project 1 patch version bumped [skip ci]"
-          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
 
       - name: Build
         run: echo "Project 1 build!"
