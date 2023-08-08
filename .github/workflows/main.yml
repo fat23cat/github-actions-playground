@@ -28,8 +28,32 @@ jobs:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.project1 == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: project1
     steps:
-      - name: "Build"
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install packages
+        run: |
+          yarn install --network-timeout 100000 --parallel
+
+      - name: Bump the app version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Build
         run: echo "Project 1 build!"
 
   build-project2:
@@ -37,5 +61,5 @@ jobs:
     if: ${{ needs.detect-changes.outputs.project2 == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: "Build"
+      - name: Build
         run: echo "Project 2 build!"
