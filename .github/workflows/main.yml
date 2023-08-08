@@ -44,9 +44,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Packages
+      - name: Install packages
         run: |
-          choco install yarn
           yarn install --network-timeout 100000 --parallel
 
       - name: Bump the app version
