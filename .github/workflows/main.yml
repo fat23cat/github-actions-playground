@@ -44,6 +44,11 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install Packages
+        run: |
+          choco install yarn
+          yarn install --network-timeout 100000 --parallel
+
       - name: Bump the app version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
