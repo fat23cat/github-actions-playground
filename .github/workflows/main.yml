@@ -46,12 +46,7 @@ jobs:
 
       - name: Install packages
         run: |
-          yarn install --network-timeout 100000 --parallel
-
-      - name: Bump the app version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+          yarn install
 
       - name: Build
         run: echo "Project 1 build!"
