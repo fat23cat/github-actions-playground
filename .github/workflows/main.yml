@@ -64,13 +64,13 @@ jobs:
 
       - name: Set output
         run: |
-          echo "name=version::$(node -p "require('./package.json').version")" > $GITHUB_VERSION
+          echo "name=version::$(node -p "require('./package.json').version")" > $GITHUB_OUTPUT
 
       - name: version
         env:
           OUTPUT1: ${{ steps.package-version.outputs.version }}
         run: |
-          echo "$OUTPUT1 $GITHUB_VERSION"
+          echo "$OUTPUT1 $GITHUB_OUTPUT"
 
       - name: Bump the app version
         run: |
