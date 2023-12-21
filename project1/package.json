@@ -15,7 +15,12 @@
     "repositoryUrl": "https://github.com/fat23cat/github-actions-playground",
     "plugins": [
       "@semantic-release/commit-analyzer",
-      "@semantic-release/npm",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
       [
         "@semantic-release/git",
         {
