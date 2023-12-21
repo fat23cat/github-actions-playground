@@ -1,0 +1,29 @@
+name: release
+
+on:
+  push:
+    branches:
+      - "develop"
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      project2: ${{ steps.changes.outputs.project2 }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            project2:
+              - 'project2/**'
+
+  build-project2:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.project2 == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: echo "Project 2 build!"
