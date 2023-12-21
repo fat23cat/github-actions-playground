@@ -1,8 +1,6 @@
 name: Main
 
 on:
-  push:
-    branches: ["develop"]
   pull_request:
     branches: ["develop"]
   workflow_dispatch:
@@ -47,6 +45,15 @@ jobs:
       - name: Install packages
         run: |
           yarn install
+
+      - name: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Save app version
+        id: package-version
+        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
 
       - name: Build
         run: echo "Project 1 build!"
