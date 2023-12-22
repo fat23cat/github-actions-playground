@@ -61,7 +61,7 @@ jobs:
 
       - name: version
         run: |
-          echo "$GITHUB_OUTPUT"
+          echo "${GITHUB_OUTPUT}"
 
       - name: Build
         run: echo "Project 1 build!"
