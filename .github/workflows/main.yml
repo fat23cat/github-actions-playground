@@ -57,11 +57,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx semantic-release
-          echo "name=version::$(node -p "require('./package.json').version")" > $GITHUB_OUTPUT
+          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
       - name: version
         run: |
-          echo "${GITHUB_OUTPUT}"
+          echo "${VERSION}"
 
       - name: Build
         run: echo "Project 1 build!"
