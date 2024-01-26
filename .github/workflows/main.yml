@@ -57,28 +57,29 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-      - name: Get merged branch name
-        id: branch_name_extractor
+      - name: Determine version bump type from commit message
+        id: version_bump
         run: |
-          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          BRANCH_NAME=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER | jq -r .head.ref)
-          echo "::set-output name=branch_name::$BRANCH_NAME"
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #   GITHUB_EVENT_PATH: ${{ github.event_path }}
+          COMMIT_MSG=$(git log -1 --pretty=format:'%s')
+
+          # Check if the commit message contains the merge branch prefixes
+          if [[ "$COMMIT_MSG" == *"Merge pull request"* ]]; then
+            if [[ "$COMMIT_MSG" == *"/fix/"* ]]; then
+              VERSION_BUMP_TYPE="patch"
+            elif [[ "$COMMIT_MSG" == *"/feat/"* ]]; then
+              VERSION_BUMP_TYPE="minor"
+            else
+              VERSION_BUMP_TYPE="patch"
+            fi
+          else
+            VERSION_BUMP_TYPE=""
+            echo "Not a merge commit, no version bump needed."
+          fi
 
       - name: Bump the app version
         run: |
-          BRANCH_NAME="${{ steps.branch_name_extractor.outputs.branch_name }}"
-          if [[ $BRANCH_NAME == feat/* ]]; then
-            VERSION_INCREMENT="minor"
-          else
-            VERSION_INCREMENT="patch"
-          fi
-
           npm version $VERSION_INCREMENT -m "experiment-ui version bumped to %s [ci skip]"
-          git push --no-verify -o ci-skip origin develop
-          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+          git push
 
         # - name: semantic-release
         #   env:
