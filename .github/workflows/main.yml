@@ -59,19 +59,10 @@ jobs:
 
       - name: Determine version and bump
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=format:'%s')
-          if [[ "$COMMIT_MSG" == *"/fix/"* ]]; then
-            npm version patch
-          elif [[ "$COMMIT_MSG" == *"/feat/"* ]]; then
-            npm version minor
-          else
-            npm version patch
-          fi
-
-          npm version $VERSION_INCREMENT
+          npm version patch
           echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
           git add --all
-          git commit -m "experiment-ui version bumped v$VERSION [skip ci]"
+          git commit -m "experiment-ui version bumped ${VERSION} [skip ci]"
           git push
 
         # - name: semantic-release
