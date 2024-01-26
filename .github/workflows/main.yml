@@ -52,12 +52,40 @@ jobs:
         run: |
           yarn install
 
-      - name: semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure Git
         run: |
-          npx semantic-release
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Get merged branch name
+        id: branch_name_extractor
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          BRANCH_NAME=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER | jq -r .head.ref)
+          echo "::set-output name=branch_name::$BRANCH_NAME"
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #   GITHUB_EVENT_PATH: ${{ github.event_path }}
+
+      - name: Bump the app version
+        run: |
+          BRANCH_NAME="${{ steps.branch_name_extractor.outputs.branch_name }}"
+          if [[ $BRANCH_NAME == feat/* ]]; then
+            VERSION_INCREMENT="minor"
+          else
+            VERSION_INCREMENT="patch"
+          fi
+
+          npm version $VERSION_INCREMENT -m "experiment-ui version bumped to %s [ci skip]"
+          git push --no-verify -o ci-skip origin develop
           echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
+        # - name: semantic-release
+        #   env:
+        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #   run: |
+        #     npx semantic-release
+        #     echo
 
       - name: version
         run: |
