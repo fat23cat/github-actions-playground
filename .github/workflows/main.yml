@@ -61,24 +61,14 @@ jobs:
         id: version_bump
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:'%s')
-
-          # Check if the commit message contains the merge branch prefixes
-          if [[ "$COMMIT_MSG" == *"Merge pull request"* ]]; then
-            if [[ "$COMMIT_MSG" == *"/fix/"* ]]; then
-              VERSION_BUMP_TYPE="patch"
-            elif [[ "$COMMIT_MSG" == *"/feat/"* ]]; then
-              VERSION_BUMP_TYPE="minor"
-            else
-              VERSION_BUMP_TYPE="patch"
-            fi
+          if [[ "$COMMIT_MSG" == *"/fix/"* ]]; then
+            VERSION_BUMP_TYPE="patch"
+          elif [[ "$COMMIT_MSG" == *"/feat/"* ]]; then
+            VERSION_BUMP_TYPE="minor"
           else
-            VERSION_BUMP_TYPE=""
-            echo "Not a merge commit, no version bump needed."
+            VERSION_BUMP_TYPE="patch"
           fi
-
-      - name: Bump the app version
-        run: |
-          npm version $VERSION_INCREMENT -m "experiment-ui version bumped to %s [ci skip]"
+          npm version $VERSION_INCREMENT -m "app version bumped to %s [ci skip]"
           git push
 
         # - name: semantic-release
