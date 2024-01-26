@@ -61,11 +61,11 @@ jobs:
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:'%s')
           if [[ "$COMMIT_MSG" == *"/fix/"* ]]; then
-            VERSION_BUMP_TYPE="patch"
+            npm version patch
           elif [[ "$COMMIT_MSG" == *"/feat/"* ]]; then
-            VERSION_BUMP_TYPE="minor"
+            npm version minor
           else
-            VERSION_BUMP_TYPE="patch"
+            npm version patch
           fi
 
           npm version $VERSION_INCREMENT
