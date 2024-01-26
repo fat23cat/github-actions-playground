@@ -52,13 +52,12 @@ jobs:
         run: |
           yarn install
 
-      - name: Configure Git
+      - name: Configure git
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-      - name: Determine version bump type from commit message
-        id: version_bump
+      - name: Determine version and bump
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:'%s')
           if [[ "$COMMIT_MSG" == *"/fix/"* ]]; then
@@ -68,7 +67,11 @@ jobs:
           else
             VERSION_BUMP_TYPE="patch"
           fi
-          npm version $VERSION_INCREMENT -m "app version bumped to %s [ci skip]"
+
+          npm version $VERSION_INCREMENT
+          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+          git add --all
+          git commit -m "experiment-ui version bumped v$VERSION [skip ci]"
           git push
 
         # - name: semantic-release
